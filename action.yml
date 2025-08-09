@@ -92,25 +92,25 @@ runs:
     #     token_format: 'access_token'
     #     access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile'
 
-    - name: 'Run Telemetry Collector for Google Cloud'
-      if: |-
-        ${{ inputs.gcp_workload_identity_provider != '' }}
-      env:
-        OTLP_GOOGLE_CLOUD_PROJECT: '${{ inputs.gcp_project_id }}'
-        GITHUB_ACTION_PATH: '${{ github.action_path }}'
-      shell: 'bash'
-      run: |-
-        set -euo pipefail
-        mkdir -p .qwen/
-        sed "s/OTLP_GOOGLE_CLOUD_PROJECT/${OTLP_GOOGLE_CLOUD_PROJECT}/g" "${GITHUB_ACTION_PATH}/scripts/collector-gcp.yaml.template" > ".qwen/collector-gcp.yaml"
+    # - name: 'Run Telemetry Collector for Google Cloud'
+    #   if: |-
+    #     ${{ inputs.gcp_workload_identity_provider != '' }}
+    #   env:
+    #     OTLP_GOOGLE_CLOUD_PROJECT: '${{ inputs.gcp_project_id }}'
+    #     GITHUB_ACTION_PATH: '${{ github.action_path }}'
+    #   shell: 'bash'
+    #   run: |-
+    #     set -euo pipefail
+    #     mkdir -p .qwen/
+    #     sed "s/OTLP_GOOGLE_CLOUD_PROJECT/${OTLP_GOOGLE_CLOUD_PROJECT}/g" "${GITHUB_ACTION_PATH}/scripts/collector-gcp.yaml.template" > ".qwen/collector-gcp.yaml"
 
-        chmod 444 "$GOOGLE_APPLICATION_CREDENTIALS"
-        docker run -d --name qwen-telemetry-collector --network host \
-          -v "${GITHUB_WORKSPACE}:/github/workspace" \
-          -e "GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS/$GITHUB_WORKSPACE//github/workspace}" \
-          -w "/github/workspace" \
-          otel/opentelemetry-collector-contrib:0.128.0 \
-          --config /github/workspace/.qwen/collector-gcp.yaml
+    #     chmod 444 "$GOOGLE_APPLICATION_CREDENTIALS"
+    #     docker run -d --name qwen-telemetry-collector --network host \
+    #       -v "${GITHUB_WORKSPACE}:/github/workspace" \
+    #       -e "GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS/$GITHUB_WORKSPACE//github/workspace}" \
+    #       -w "/github/workspace" \
+    #       otel/opentelemetry-collector-contrib:0.128.0 \
+    #       --config /github/workspace/.qwen/collector-gcp.yaml
 
     - name: 'Install Qwen CLI'
       id: 'install'
@@ -162,7 +162,7 @@ runs:
         GOOGLE_CLOUD_LOCATION: '${{ inputs.gcp_location }}'
         GOOGLE_GENAI_USE_VERTEXAI: '${{ inputs.use_vertex_ai }}'
         GOOGLE_GENAI_USE_GCA: '${{ inputs.use_qwen_code_assist }}'
-        GOOGLE_CLOUD_ACCESS_TOKEN: '${{steps.auth.outputs.access_token}}'
+        # GOOGLE_CLOUD_ACCESS_TOKEN: '${{steps.auth.outputs.access_token}}'
         PROMPT: '${{ inputs.prompt }}'
 
 branding:
